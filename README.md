@@ -1,11 +1,11 @@
 # Quadcopter simulator
 A quadcopter simulator with single and multi-quad simulations. The simulator supports time scaling (including real-time simulations) and headless mode (the simulator runs in background without a GUI update).
 
-![Single Quadcopter Simulation](/quad_sim.gif?raw=true "quad_sim")
+![Single Quadcopter Simulation](/assets/quad_sim.gif?raw=true "quad_sim")
 
 Single Quadcopter Simulation
 
-![Multi Quadcopter Simulation](/multiquad_sim.gif?raw=true "multiquad_sim")
+![Multi Quadcopter Simulation](/assets/multiquad_sim.gif?raw=true "multiquad_sim")
 
 Multi Quadcopter Simulation
 
