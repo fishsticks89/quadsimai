@@ -132,6 +132,7 @@ class Quadcopter():
             self.time = datetime.datetime.now()
             if (self.time-last_update).total_seconds() > rate:
                 self.update(dt)
+                # print(self.quads['q1']["m1"].speed)
                 last_update = self.time
 
     def start_thread(self,dt=0.002,time_scaling=1):

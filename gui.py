@@ -1,15 +1,18 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-import mpl_toolkits.mplot3d.axes3d as Axes3D
 import sys
+from typing import Dict, Any, List, Tuple
+from numpy.typing import NDArray
+from matplotlib.backend_bases import KeyEvent
 
 class GUI():
     # 'quad_list' is a dictionary of format: quad_list = {'quad_1_name':{'position':quad_1_position,'orientation':quad_1_orientation,'arm_span':quad_1_arm_span}, ...}
-    def __init__(self, quads):
+    def __init__(self, quads: Dict[str, Dict[str, Any]]) -> None:
         self.quads = quads
+        plt.ion()
         self.fig = plt.figure()
-        self.ax = Axes3D.Axes3D(self.fig)
+        self.ax = self.fig.add_subplot(111, projection='3d')
         self.ax.set_xlim3d([-2.0, 2.0])
         self.ax.set_xlabel('X')
         self.ax.set_ylim3d([-2.0, 2.0])
@@ -19,8 +22,9 @@ class GUI():
         self.ax.set_title('Quadcopter Simulation')
         self.init_plot()
         self.fig.canvas.mpl_connect('key_press_event', self.keypress_routine)
+        plt.show(block=False)
 
-    def rotation_matrix(self,angles):
+    def rotation_matrix(self, angles: NDArray[np.floating[Any]]) -> NDArray[np.floating[Any]]:
         ct = math.cos(angles[0])
         cp = math.cos(angles[1])
         cg = math.cos(angles[2])
@@ -30,16 +34,16 @@ class GUI():
         R_x = np.array([[1,0,0],[0,ct,-st],[0,st,ct]])
         R_y = np.array([[cp,0,sp],[0,1,0],[-sp,0,cp]])
         R_z = np.array([[cg,-sg,0],[sg,cg,0],[0,0,1]])
-        R = np.dot(R_z, np.dot( R_y, R_x ))
+        R: NDArray[np.floating[Any]] = np.dot(R_z, np.dot( R_y, R_x ))
         return R
 
-    def init_plot(self):
+    def init_plot(self) -> None:
         for key in self.quads:
             self.quads[key]['l1'], = self.ax.plot([],[],[],color='blue',linewidth=3,antialiased=False)
             self.quads[key]['l2'], = self.ax.plot([],[],[],color='red',linewidth=3,antialiased=False)
             self.quads[key]['hub'], = self.ax.plot([],[],[],marker='o',color='green', markersize=6,antialiased=False)
 
-    def update(self):
+    def update(self) -> None:
         for key in self.quads:
             R = self.rotation_matrix(self.quads[key]['orientation'])
             L = self.quads[key]['L']
@@ -52,11 +56,13 @@ class GUI():
             self.quads[key]['l1'].set_3d_properties(points[2,0:2])
             self.quads[key]['l2'].set_data(points[0,2:4],points[1,2:4])
             self.quads[key]['l2'].set_3d_properties(points[2,2:4])
-            self.quads[key]['hub'].set_data(points[0,5],points[1,5])
-            self.quads[key]['hub'].set_3d_properties(points[2,5])
-        plt.pause(0.000000000000001)
+            self.quads[key]['hub'].set_data([points[0,5]],[points[1,5]])
+            self.quads[key]['hub'].set_3d_properties([points[2,5]])
+        self.fig.canvas.draw()
+        self.fig.canvas.flush_events()
+        plt.pause(0.001)
 
-    def keypress_routine(self,event):
+    def keypress_routine(self, event: KeyEvent) -> None:
         sys.stdout.flush()
         if event.key == 'x':
             y = list(self.ax.get_ylim3d())

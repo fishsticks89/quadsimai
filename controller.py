@@ -4,7 +4,7 @@ import time
 import threading
 
 class Controller_PID_Point2Point():
-    def __init__(self, get_state, get_time, actuate_motors, params, quad_identifier):
+    def __init__(self, get_state, get_time, actuate_motors, params, quad_identifier) -> None:
         self.quad_identifier = quad_identifier
         self.actuate_motors = actuate_motors
         self.get_state = get_state
